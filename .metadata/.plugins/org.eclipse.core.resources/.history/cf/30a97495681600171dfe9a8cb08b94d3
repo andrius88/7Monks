@@ -1,0 +1,167 @@
+package lt.vcs.and.sevenmonks;
+
+//import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class Monk extends Thread {
+	
+	private Thread threadIns;
+	private final int thredNumber;
+	private final int maxMonkNum;
+	private final Dish dishPlate;
+	
+	private int sleepInterval = 10;	// dummy initial value
+	private final Random randomGenerator = new Random();
+
+	private final List<Fork> listOfForks;
+		
+	public Monk(int monkNumberIn, int maxMonkNumIn, List<Fork> listOfForksIn) {
+		      this.setName("Monk-" + monkNumberIn);
+		      this.thredNumber = monkNumberIn;
+		      this.maxMonkNum = maxMonkNumIn;
+		      this.dishPlate = new Dish(5);
+		      
+		      listOfForks = listOfForksIn;
+		      //System.out.println("Monk constructor: Creating Monk:  " +  threadName );
+	}
+
+	
+	@Override
+	   public void run() {
+		
+		//System.out.println(System.currentTimeMillis() + " " + this.getName() +"       .run started ");
+		//Dish dishPlate = new Dish(5);
+		
+		      
+		try {
+			sleepInterval = randomGenerator.nextInt(50);
+            this.sleep(sleepInterval); 
+            System.out.println(System.currentTimeMillis() + " " + thredNumber + ".run: "
+            					+ this.getName() + ", " + " sleep: " + sleepInterval); 
+			//for(int i=1; i<500000; i++) {
+            int i=0; 
+            while(true){
+	            i=i+1; 
+	            System.out.println(this.getName() + " i: " + i);
+	            if ((thredNumber == 0) && (listOfForks.get(0).isNotForkInUse()) && (listOfForks.get(listOfForks.size()-1).isNotForkInUse())){
+	            	//System.out.println("Monk-0 tries to EAT");
+	            	//System.out.println("List of forks size: " + listOfForks.size());
+	         
+	            	synchronized(listOfForks.get(0)) {
+	            	synchronized(listOfForks.get(maxMonkNum)) {
+		            	System.out.println("Is Fork-0 locked: " + this.holdsLock(listOfForks.get(0)));
+		            	listOfForks.get(0).setForkAsInUse();
+		            	//this.holdsLock(listOfForks.get(maxMonkNum);
+		            	listOfForks.get(maxMonkNum).setForkAsInUse();
+		            	if(dishPlate.eatDumplingIfCan()){
+		            		
+		            		System.out.println(System.currentTimeMillis() + " " + this.getName() +" eats dumpling no: " 
+		            		+ (dishPlate.getDumplingsLeft()+1) + "Loop: " + i  + "    No of threads:" + activeCount());
+		            		sleepInterval = randomGenerator.nextInt(20);
+		    	            this.sleep(sleepInterval);
+		    	            listOfForks.get(0).setForkAsNotInUse();
+			            	listOfForks.get(maxMonkNum).setForkAsNotInUse();
+			            	sleepInterval = randomGenerator.nextInt(30);		// monk rests
+		    	            this.sleep(sleepInterval);
+		            	} else {
+		            		System.out.println(System.currentTimeMillis() + " " + this.getName() +
+		            				" FINISHED EATING, DUMPLING NO: " + dishPlate.getDumplingsLeft() 
+		            				+ " LOOP :" + i);
+		            		System.out.println("Is thred " + this.getName() +  " alive: " + this.isAlive());
+		            		//this.interrupt();
+		            		boolean shutdown = true;
+		            		System.out.println("Is thred alive: " + this.isAlive());
+		            		break;
+		            	}
+	            	}}
+	            }   
+	            	
+	            	
+	            if ((thredNumber >= 1) || (thredNumber <= maxMonkNum-1)){
+	            	for(int j=1; j<= maxMonkNum-1; j++){
+	            		
+	            		synchronized(listOfForks.get(j)){
+	    	            synchronized(listOfForks.get(j-1)){
+	    	            	//System.out.println("Is Fork-" + j + " locked: " + this.holdsLock(listOfForks.get(j)));
+	    	            	//System.out.println("Is Fork-" + (j-1) + " locked: " + this.holdsLock(listOfForks.get(j-1)));
+		            		if((listOfForks.get(j).isNotForkInUse()) && (listOfForks.get(j-1).isNotForkInUse())){
+		            			listOfForks.get(j).setForkAsInUse();
+		    	            	listOfForks.get(j-1).setForkAsInUse();
+		    	            	if(dishPlate.eatDumplingIfCan()){
+		    	            		//this.eat(j, dishPlate);
+		    	            		
+		    	            		System.out.println(System.currentTimeMillis() + " " + this.getName() + " eats dumpling no: " 
+		    	            		+ (dishPlate.getDumplingsLeft()+1)  + "Loop: " + i + "    No of threads:" + activeCount());
+		    	            		sleepInterval = randomGenerator.nextInt(20);
+		    	    	            this.sleep(sleepInterval);
+		    	    	            listOfForks.get(j).setForkAsNotInUse();
+		    		            	listOfForks.get(j-1).setForkAsNotInUse();
+		    		            	sleepInterval = randomGenerator.nextInt(30);		// monk rests
+		    	    	            this.sleep(sleepInterval);
+		    	            	} else {
+		    	            		System.out.println(System.currentTimeMillis() + " " + this.getName() +
+		    	            				" FINISHED EATING, DUMPLING NO: " + dishPlate.getDumplingsLeft() 
+		    	            				+ " LOOP :" + i);
+		    	            		System.out.println("Is thred " + this.getName() +  " alive: " + this.isAlive());
+		    	            		//this.interrupt();
+		    	            		boolean shutdown = true;
+		    	            		System.out.println("Is thred alive: " + this.isAlive());
+		    	            		break;
+		    	            	}
+		            		}
+	    	            }}
+	            		//System.out.println("Is Fork-" + j + " locked: " + this.holdsLock(listOfForks.get(j)));
+    	            	//System.out.println("Is Fork-" + (j-1) + " locked: " + this.holdsLock(listOfForks.get(j-1)));
+	            	}
+	            }
+	            
+	            if ((thredNumber == maxMonkNum) && (listOfForks.get(0).isNotForkInUse()) && (listOfForks.get(listOfForks.size()-1).isNotForkInUse())){
+	            	synchronized(listOfForks.get(maxMonkNum-1)){
+	            	synchronized(listOfForks.get(maxMonkNum)){
+		            	listOfForks.get(maxMonkNum-1).setForkAsInUse();
+		            	listOfForks.get(maxMonkNum).setForkAsInUse();
+		            	if(dishPlate.eatDumplingIfCan()){
+		            		//this.eat( maxMonkNum, dishPlate);
+		            		
+		            		//System.out.println(System.currentTimeMillis() + " " + this.getName() +" eats dumpling no: " 
+		            		//+ (dishPlate.getDumplingsLeft()+1)  + "Loop: " + i + "    No of threads:" + activeCount());
+		            		sleepInterval = randomGenerator.nextInt(20);
+		    	            this.sleep(sleepInterval);
+		    	            listOfForks.get(maxMonkNum-1).setForkAsNotInUse();
+			            	listOfForks.get(maxMonkNum).setForkAsNotInUse();
+			            	sleepInterval = randomGenerator.nextInt(30);		// monk rests
+		    	            this.sleep(sleepInterval);
+		            	} else {
+		            		System.out.println(System.currentTimeMillis() + " " + this.getName() +
+		            				" FINISHED EATING, DUMPLING NO: " + dishPlate.getDumplingsLeft() 
+		            				+ " LOOP :" + i);
+		            		System.out.println("Is thred " + this.getName() +  " alive: " + this.isAlive());
+		            		//this.interrupt();
+		            		boolean shutdown = true;
+		            		System.out.println("Is thred alive: " + this.isAlive());
+		            		break;
+		            	}
+	            	}}
+	            }
+
+	            //System.out.println(System.currentTimeMillis() + " " + thredNumber +".run: Running " +  threadName );
+	            }
+	     } catch (InterruptedException e) {
+	         System.out.println(System.currentTimeMillis() + " " + this.getName() + ".run: " + " interrupted.");
+	      }
+	      System.out.println(System.currentTimeMillis() + " " + this.getName() + ".run: " + " exiting.");
+	   }
+
+	
+	public void start () {
+	      System.out.println(System.currentTimeMillis() + " " + "Starting " +  this.getName() );
+	      
+	      if (threadIns == null) {
+	    	  threadIns = new Thread (this, this.getName());
+	    	  threadIns.start ();
+	    	  
+	      }
+	   }
+	
+}

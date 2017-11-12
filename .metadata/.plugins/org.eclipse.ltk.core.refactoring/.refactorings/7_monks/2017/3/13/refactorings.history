@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;lt.vcs.and.sevenmonks.Dumplig&apos; to &apos;Dumpling&apos;&#x0D;&#x0A;- Original project: &apos;7_monks&apos;&#x0D;&#x0A;- Original element: &apos;lt.vcs.and.sevenmonks.Dumplig&apos;&#x0D;&#x0A;- Renamed element: &apos;lt.vcs.and.sevenmonks.Dumpling&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;Dumplig&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;lt.vcs.and.sevenmonks{Dumplig.java[Dumplig" matchStrategy="1" name="Dumpling" qualified="false" references="true" similarDeclarations="false" stamp="1490854186397" textual="false" version="1.0"/>
+</session>

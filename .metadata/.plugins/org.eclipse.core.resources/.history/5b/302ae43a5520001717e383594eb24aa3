@@ -1,0 +1,93 @@
+package lt.vcs.and.graphicmonks;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
+public class GraphicMonk {
+	
+	private final String grMonkName;
+	private boolean isEating = false;
+	private final int id;
+	private int xPos;
+	private int yPos;
+	private int alpha;
+	private int diameter;
+	private float elipsFctr;
+	
+
+	
+	public GraphicMonk(int numberIn, int xPosIn, int yPosIn, int alphaIn, int diameterIn){
+
+		this.id = numberIn;
+		this.xPos =xPosIn;
+		this.yPos =yPosIn;
+		this.alpha = alphaIn;
+		this.diameter =diameterIn;
+		this.elipsFctr = 1.5F;
+		this.grMonkName = "GraphicMonk-" + id;
+		this.isEating = false;
+
+	}
+
+	public void drawYourselfMonk(Graphics2D gIn){
+		System.out.println("GraphicMonk.drawYourselfMonk() " + this.getName() + " IsEating Status: " + this.isEating);
+		
+		gIn.rotate(Math.toRadians((-1)*alpha), (int) (xPos-diameter*elipsFctr/2), (int) (yPos-diameter/elipsFctr/2)); 
+		
+		if(this.isEating = true){
+			gIn.setColor(Color.ORANGE);
+			gIn.fillOval((int) (xPos-diameter*elipsFctr/2), (int) (yPos-diameter/elipsFctr/2), ((int) (this.diameter*elipsFctr)), ((int) (this.diameter/elipsFctr)));
+			gIn.setColor(Color.BLACK);
+			gIn.drawOval((int) (xPos-diameter*elipsFctr/2), (int) (yPos-diameter/elipsFctr/2), ((int) (this.diameter*elipsFctr)), ((int) (this.diameter/elipsFctr)));
+		} else if(this.isEating != true){
+			gIn.setColor(Color.LIGHT_GRAY);
+			gIn.fillOval((int) (xPos-diameter*elipsFctr/2), (int) (yPos-diameter/elipsFctr/2), ((int) (this.diameter*elipsFctr)), ((int) (this.diameter/elipsFctr)));
+			gIn.setColor(Color.BLACK);
+			gIn.drawOval((int) (xPos-diameter*elipsFctr/2), (int) (yPos-diameter/elipsFctr/2), ((int) (this.diameter*elipsFctr)), ((int) (this.diameter/elipsFctr)));
+		}
+		//gIn.drawString(("*" + this.id), (int) (xPos), (int) (yPos));
+		gIn.setColor(Color.BLACK);
+		gIn.rotate(Math.toRadians((1)*alpha), (int) (xPos-diameter*elipsFctr/2), (int) (yPos-diameter/elipsFctr/2));
+		gIn.fillOval((int) (xPos-diameter*elipsFctr/2), (int) (yPos-diameter/elipsFctr/2), 2, 2);
+	}
+	
+	public boolean isEating(){
+		return this.isEating;
+	}
+	
+	public void setAsEating(){
+		this.isEating = true;
+	}
+	
+	public void setAsNotEating(){
+		this.isEating = false;
+		System.out.println("GraphicMonk.setAsNotEating() " + this.getName() + " IsEating Status: " + this.isEating);
+		
+	}
+	
+	public String getName(){
+		return this.grMonkName;
+	}
+	
+	public int getId(){
+		return this.id;
+	}
+	
+	public int getXPos(){
+		return this.xPos;
+	}
+	
+	public int getYPos(){
+		return this.yPos;
+	}
+	
+	public int getAlpha(){
+		return this.alpha;
+	}
+	
+	public int getDiameter(){
+		return this.diameter;
+	}
+	
+}
